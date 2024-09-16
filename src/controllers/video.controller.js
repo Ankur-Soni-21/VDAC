@@ -1,24 +1,22 @@
 const youtubedl = require('youtube-dl-exec');
 const createError = require('http-errors');
-const { processVidInfo } = require('../utils/procVidInfo.util');
-// const fs = require('fs');
+const logger = require('progress-estimator')();
+const { processVidInfo } = require('../utils/videoInfoProcessor.util');
 
 const handleGetVideoInfo = async (req, res, next) => {
     const { url } = req.body;
     console.log('url', url);
 
     try {
-        const videoInfo = await youtubedl(url, {
+        const youtubedlPromise = youtubedl(url, {
             dumpSingleJson: true,
             noCheckCertificates: true,
             noWarnings: true,
             preferFreeFormats: true,
-            addHeader: ['referer:youtube.com', 'user-agent:googlebot']
+            addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
+            skipDownload: true,
         });
-
-        // Optionally save the raw output for debugging
-        // fs.writeFileSync('./videoInfo.json', JSON.stringify(videoInfo, null, 2));
-
+        const videoInfo = await logger(youtubedlPromise, `Fetching info for ${url}`);
         const processedInfo = processVidInfo(videoInfo);
         res.status(200).json(processedInfo);
     } catch (err) {

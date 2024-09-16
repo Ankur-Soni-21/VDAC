@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "TINY_TOOLS_API project",
   "scripts": {
-    "test": "echo \"No tests implemented yet.\"",
+    "test": "nodemon test/request.test.js",
     "start": "nodemon src/index.js"
   },
   "dependencies": {
@@ -21,6 +21,7 @@
   "devDependencies": {
     "axios": "^1.7.7",
     "nodemon": "^3.1.4",
+    "progress-estimator": "^0.3.1",
     "readline": "^1.3.0"
   }
 }
