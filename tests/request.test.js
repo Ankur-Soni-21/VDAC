@@ -6,13 +6,6 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-const generateSignature = (url, ts) => {
-    const data = url + ts + secret;
-    const hash = crypto.createHash('md5')
-        .update(data)
-        .digest('hex');
-    return hash;
-}
 
 rl.question('Enter the YouTube URL: ', (url) => {
     rl.question('Enter 1 for current timestamp or 2 for a 10-minute old timestamp: ', (choice) => {
