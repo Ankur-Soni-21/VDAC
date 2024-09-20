@@ -4,7 +4,7 @@ const createError = require('http-errors');
 const processVidInfo = (videoInfo) => {
     try {
         if (!videoInfo)
-            throw createError(404, 'Video Info not found');
+            return createError(404, 'Video Info not found');
         const videoFormats = procVidFormats(videoInfo.formats);
         return {
             id: videoInfo.id,
@@ -41,8 +41,6 @@ function formatDuration(duration) {
     } catch (err) {
         if (!err.status)
             throw createError(500, 'Internal Server Error');
-        else
-            throw err;
     }
 }
 

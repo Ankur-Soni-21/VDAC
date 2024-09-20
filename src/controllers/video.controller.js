@@ -1,14 +1,21 @@
-const youtubedl = require('youtube-dl-exec');
-const createError = require('http-errors');
-const logger = require('progress-estimator')();
 const { processVidInfo } = require('../utils/videoInfoProcessor.util');
+const Log = require('../models/logger.model');
+const youtubedl = require('youtube-dl-exec');
 
 const handleGetVideoInfo = async (req, res, next) => {
-    const { url } = req.body;
-    console.log('url', url);
+    const startTime = Date.now();
+    const log = {
+        ipAddress: req.ip,
+        signature: req.body._s,
+        url: req.body.url,
+        success: true,
+        responseTime: 0,
+        response: null
+    };
 
     try {
-        const youtubedlPromise = youtubedl(url, {
+        const { url } = req.body;
+        const youtubedlPromise = await youtubedl(url, {
             dumpSingleJson: true,
             noCheckCertificates: true,
             noWarnings: true,
@@ -16,19 +23,24 @@ const handleGetVideoInfo = async (req, res, next) => {
             addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
             skipDownload: true,
         });
-        const videoInfo = await logger(youtubedlPromise, `Fetching info for ${url}`);
-        const processedInfo = processVidInfo(videoInfo);
+
+        const processedInfo = processVidInfo(youtubedlPromise);
+        log.success = true;
+        log.response = processedInfo;
+        log.responseTime = (Date.now() - startTime) / 1000;
+
+        // Save log to database
+        await Log.create(log);
+
         res.status(200).json(processedInfo);
     } catch (err) {
-        console.log('Error in handleGetVideoInfo', err);
-        if (err.message.includes('Video unavailable')) {
-            next(createError(404, 'Video unavailable'));
-        } else {
-            next(createError(500, 'Internal Server Error'));
-        }
+        log.success = false;
+        log.responseTime = (Date.now() - startTime) / 1000;
+        log.response = { error: err.message };
+        await Log.create(log);
+
+        res.status(500).json({ error: err.message });
     }
 };
 
-module.exports = {
-    handleGetVideoInfo,
-};
+module.exports = { handleGetVideoInfo };

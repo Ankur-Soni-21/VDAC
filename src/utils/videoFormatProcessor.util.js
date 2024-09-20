@@ -3,7 +3,7 @@ const createError = require('http-errors');
 const procVidFormats = (formats) => {
     try {
         if (!formats)
-            throw createError(404, 'Video Formats not found');
+            return createError(404, 'Video Formats not found');
 
         let videoFormatsWithAudio = [];
         let videoFormats = [];
@@ -90,8 +90,6 @@ const procVidFormats = (formats) => {
     } catch (err) {
         if (!err.status)
             throw createError(500, 'Internal Server Error');
-        else
-            throw err;
     }
 }
 

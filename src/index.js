@@ -10,7 +10,6 @@ const validateUrl = require("./middlewares/urlValidator.middleware");
 const validateRecentRequest = require("./middlewares/recentRequestValidator.middleware");
 const verifySignature = require("./middlewares/signatureValidator.middleware");
 
-
 // Load environment variables
 dotenv.config();
 const PORT = process.env.PORT;
