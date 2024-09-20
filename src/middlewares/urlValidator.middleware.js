@@ -3,14 +3,12 @@ const createError = require('http-errors');
 const sanitizeUrl = require("@braintree/sanitize-url").sanitizeUrl;
 
 const validateYouTubeUrl = async (req, res, next) => {
-    const { url } = req.body;
-
-    // Check if URL is provided
-    if (!url) {
-        return next(createError(400, 'URL is required'));
-    }
-
     try {
+        // Check if URL is provided
+        if (!req.body.url) {
+            return next(createError(400, 'URL is required'));
+        }
+        const { url } = req.body;
         // Sanitize URL
         const sanitizedURL = sanitizeUrl(url);
 
@@ -20,7 +18,8 @@ const validateYouTubeUrl = async (req, res, next) => {
             return next(createError(400, 'Invalid YouTube URL'));
         }
 
-
+        // Add sanitized URL to the request object
+        req.body.url = sanitizedURL;
         next();
     } catch (err) {
         next(createError(500, 'Internal Server Error'));
