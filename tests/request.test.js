@@ -1,5 +1,8 @@
 const readline = require('readline');
 const crypto = require('crypto');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -22,6 +25,7 @@ rl.question('Enter the YouTube URL: ', (url) => {
 
         // Your code logic here using the YouTube URL and timestamp
         const SECRET_KEY = process.env.SECRET_KEY;
+        console.log('Secret Key:', SECRET_KEY);
         const data = url + timestamp + SECRET_KEY;
         const signature = crypto.createHash('md5')
             .update(data)

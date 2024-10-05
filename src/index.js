@@ -4,15 +4,17 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+// Import routes and middlewares
 const videoRouter = require('./routes/video.route');
 const errorHandler = require('./middlewares/errorHandler.middleware');
 const validateUrl = require("./middlewares/urlValidator.middleware");
 const validateRecentRequest = require("./middlewares/recentRequestValidator.middleware");
 const verifySignature = require("./middlewares/signatureValidator.middleware");
+const redisCache = require("./middlewares/redisCache.middleware");
 
 // Load environment variables
 dotenv.config();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
 
 const app = express();
@@ -20,23 +22,26 @@ const app = express();
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
-app.use(validateRecentRequest);
 
 
 // Routes
-app.use('/api/v1/video', validateUrl, verifySignature, videoRouter);
+app.use('/api/health', (req, res) => {
+    res.status(200).send('Server is running');
+});
+app.use('/api/v1/video', validateRecentRequest, validateUrl, verifySignature, redisCache, videoRouter);
 app.use(errorHandler);
 
 // Connect to MongoDB and start the server
 const startServer = async () => {
     try {
         await mongoose.connect(MONGO_URI);
-        console.log('Connected to MongoDB');
+        // console.log('Connected to MongoDB : ', MONGO_URI);
+        // console.log('Secret key : ', process.env.SECRET_KEY);
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
     } catch (err) {
-        console.error('Failed to connect to MongoDB', err);
+        console.error('Failed to connect', err);
     }
 };
 

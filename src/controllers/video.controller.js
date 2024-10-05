@@ -1,9 +1,16 @@
 const youtubedl = require('youtube-dl-exec');
 const createError = require('http-errors');
-// const logger = require('progress-estimator')();
 const { processVidInfo } = require('../utils/videoInfoProcessor.util');
 const logQueue = require('../utils/logQueue.util');
-// const Log = require('../models/logger.model');
+const { cacheVideoInfo } = require("../utils/redisCacheSystem.util");
+
+const handleAddLog = async (log, success, response) => {
+    log.success = success;
+    log.response = response;
+    logQueue.addLog(log);
+    console.log('Log added to queue');
+}
+
 
 const handleGetVideoInfo = async (req, res, next) => {
     const { url } = req.body;
@@ -27,18 +34,16 @@ const handleGetVideoInfo = async (req, res, next) => {
             addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
             skipDownload: true,
         });
+
+
         console.log("Request processed");
-        log.response = videoInfo;
-        log.success = true;
-        logQueue.addLog(log);
-        // Log.create(log);
         const processedInfo = processVidInfo(videoInfo);
+        cacheVideoInfo(req.redis, req.videoKey, url, processedInfo);
+        handleAddLog(log, true, processedInfo);
         res.status(200).json(processedInfo);
+
     } catch (err) {
-        log.response = err;
-        log.success = false;
-        logQueue.addLog(log);
-        // Log.create(log);
+        handleAddLog(log, false, err.message);
         console.log('Error in handleGetVideoInfo', err);
         if (err.message.includes('Video unavailable')) {
             next(createError(404, 'Video unavailable'));
