@@ -10,7 +10,7 @@ const errorHandler = require('./middlewares/errorHandler.middleware');
 const validateUrl = require("./middlewares/urlValidator.middleware");
 const validateRecentRequest = require("./middlewares/recentRequestValidator.middleware");
 const verifySignature = require("./middlewares/signatureValidator.middleware");
-const redisCache = require("./middlewares/redisCache.middleware");
+// const redisCache = require("./middlewares/redisCache.middleware");
 
 // Load environment variables
 dotenv.config();
@@ -28,7 +28,7 @@ app.use(cors());
 app.use('/api/health', (req, res) => {
     res.status(200).send('Server is running');
 });
-app.use('/api/v1/video', validateRecentRequest, validateUrl, verifySignature, redisCache, videoRouter);
+app.use('/api/v1/video', validateRecentRequest, validateUrl, verifySignature, videoRouter);
 app.use(errorHandler);
 
 // Connect to MongoDB and start the server
