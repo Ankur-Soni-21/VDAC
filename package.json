@@ -2,6 +2,7 @@
   "name": "tiny-tools-api",
   "version": "1.0.0",
   "description": "TINY_TOOLS_API project",
+  "type": "commonjs",
   "scripts": {
     "test": "nodemon test/request.test.js",
     "start": "nodemon src/index.js"
@@ -12,10 +13,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
-    "express-rate-limit": "^7.4.0",
     "http-errors": "^2.0.0",
     "mongoose": "latest",
-    "multer": "^1.4.5-lts.1",
     "youtube-dl-exec": "^3.0.8"
   },
   "devDependencies": {
