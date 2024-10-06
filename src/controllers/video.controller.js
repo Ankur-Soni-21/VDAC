@@ -2,7 +2,7 @@ const youtubedl = require('youtube-dl-exec');
 const createError = require('http-errors');
 const { processVidInfo } = require('../utils/videoInfoProcessor.util');
 const logQueue = require('../utils/logQueue.util');
-const { cacheVideoInfo } = require("../utils/redisCacheSystem.util");
+// const { cacheVideoInfo } = require("../utils/redisCacheSystem.util");
 
 const handleAddLog = async (log, success, response) => {
     log.success = success;
@@ -38,7 +38,7 @@ const handleGetVideoInfo = async (req, res, next) => {
 
         console.log("Request processed");
         const processedInfo = processVidInfo(videoInfo);
-        cacheVideoInfo(req.redis, req.videoKey, url, processedInfo);
+        // cacheVideoInfo(req.redis, req.videoKey, url, processedInfo);
         handleAddLog(log, true, processedInfo);
         res.status(200).json(processedInfo);
 
