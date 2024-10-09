@@ -1,7 +1,10 @@
 const express = require('express');
 const videoRouter = express.Router();
-const { handleGetVideoInfo } = require('../controllers/video.controller');
+const handleGetYoutubeInfo = require('../controllers/youtube.controller');
 
-videoRouter.post("/video-info", handleGetVideoInfo);
+videoRouter.post("/yt", handleGetYoutubeInfo);
+// videoRouter.post("/insta", handleGetVideoInfo);
+// videoRouter.post("/fb", handleGetVideoInfo);
+// videoRouter.post("/x", handleGetVideoInfo);
 
 module.exports = videoRouter;

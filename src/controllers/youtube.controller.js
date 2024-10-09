@@ -1,7 +1,7 @@
 const youtubedl = require('youtube-dl-exec');
 const createError = require('http-errors');
-const { processVidInfo } = require('../utils/videoInfoProcessor.util');
-const logQueue = require('../utils/logQueue.util');
+const { processVidInfo } = require('../utils/youtube/proc-youtube-info.util');
+const logQueue = require('../utils/log-queue.util');
 // const { cacheVideoInfo } = require("../utils/redisCacheSystem.util");
 
 const handleAddLog = async (log, success, response) => {
@@ -12,7 +12,7 @@ const handleAddLog = async (log, success, response) => {
 }
 
 
-const handleGetVideoInfo = async (req, res, next) => {
+const handleGetYoutubeInfo = async (req, res, next) => {
     const { url } = req.body;
     const log = {
         ipAddress: req.ip,
@@ -53,6 +53,4 @@ const handleGetVideoInfo = async (req, res, next) => {
     }
 };
 
-module.exports = {
-    handleGetVideoInfo,
-};
+module.exports = handleGetYoutubeInfo;

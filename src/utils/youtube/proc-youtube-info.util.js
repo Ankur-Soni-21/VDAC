@@ -1,4 +1,4 @@
-const procVidFormats = require('./videoFormatProcessor.util');
+const procVidFormats = require('./handle-youtube-formats.util');
 const createError = require('http-errors');
 
 const processVidInfo = (videoInfo) => {

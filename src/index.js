@@ -6,11 +6,10 @@ const cors = require('cors');
 
 // Import routes and middlewares
 const videoRouter = require('./routes/video.route');
-const errorHandler = require('./middlewares/errorHandler.middleware');
-const validateUrl = require("./middlewares/urlValidator.middleware");
-const validateRecentRequest = require("./middlewares/recentRequestValidator.middleware");
-const verifySignature = require("./middlewares/signatureValidator.middleware");
-// const redisCache = require("./middlewares/redisCache.middleware");
+const errorHandler = require('./middlewares/error-handler.middleware');
+const validateUrl = require("./middlewares/url-validator.middleware");
+const validateRecentRequest = require("./middlewares/request-validator.middleware");
+const verifySignature = require("./middlewares/signature-validator.middleware");
 
 // Load environment variables
 dotenv.config();
