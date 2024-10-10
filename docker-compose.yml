@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   app:
-    image: tiny_tools
+    image: vdac
     ports:
       - "5000:5000"
     env_file:

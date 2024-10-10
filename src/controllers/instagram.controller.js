@@ -29,7 +29,7 @@ const handleAddLog = async (log, success, response) => {
 }
 
 const throwError = (err, next) => {
-    // console.log('Error in handleGetInstagramVideoOrPost');
+    console.log('Error in handleGetInstagramVideoOrPost');
     if (err.message.includes('Video unavailable')) {
         next(createError(404, 'Video unavailable', err));
     } else {
