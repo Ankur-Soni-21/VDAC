@@ -43,8 +43,8 @@ const handleGetYoutubeVideo = async (req, res, next) => {
         res.status(200).json(processedInfo);
 
     } catch (err) {
-        handleAddLog(log, false, err.message);
-        console.log('Error in handleGetVideoInfo', err);
+        handleAddLog(log, false, err.message || err || 'Unknown Error');
+        console.log('Error in handleGetYoutubeVideo', err);
         if (err.message.includes('Video unavailable')) {
             next(createError(404, 'Video unavailable'));
         } else {

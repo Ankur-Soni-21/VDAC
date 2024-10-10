@@ -29,12 +29,12 @@ const handleAddLog = async (log, success, response) => {
     console.log('Log added to queue');
 }
 
-const trowError = (err, next) => {
-    console.log('Error in handleGetVideoInfo', err);
+const throwError = (err, next) => {
+    console.log('Error in handleGetInstagramVideoOrPost');
     if (err.message.includes('Video unavailable')) {
-        next(createError(404, 'Video unavailable'));
+        next(createError(404, 'Video unavailable', err));
     } else {
-        next(createError(500, 'Internal Server Error'));
+        next(createError(500, 'Internal Server Error', err));
     }
 }
 
@@ -63,7 +63,7 @@ const handleGetInstagramVideoOrPost = async (req, res, next) => {
 
         const cookie = await fetchCookie();
         const ig = new igApi(cookie);
-        const respose = await ig.fetchPost(url).then(res => { return res; }).catch(err => { throw err; });
+        const respose = await ig.fetchPost(url).then(res => { return res; }).catch(err => { err.message = "Video unavailable"; throw err; });
         const result = handleInstaVideoFormats(respose);
         // console.log(result);
 
@@ -71,10 +71,10 @@ const handleGetInstagramVideoOrPost = async (req, res, next) => {
         res.status(200).json(result);
 
     } catch (err) {
-        handleAddLog(log, false, err.message);
-        trowError(err, next);
+        handleAddLog(log, false, err.message || 'failed');
+        throwError(err, next);
     }
 };
 
-module.exports = 
+module.exports =
     handleGetInstagramVideoOrPost

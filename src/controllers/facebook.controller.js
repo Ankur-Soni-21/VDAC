@@ -24,16 +24,13 @@ const handleGetFacebookVideo = async (req, res, next) => {
 
     try {
         const videoInfo = await facebookdl(url);
+        console.log("videoinfo:", videoInfo)
         handleAddLog(log, true, videoInfo);
         res.status(200).json(videoInfo);
     } catch (err) {
-        console.log("Facebook Video Download Fail Message : ", err.message);
-        handleAddLog(log, false, err.message);
-        if (err.message.includes('Video unavailable')) {
-            next(createError(404, 'Video unavailable'));
-        } else {
-            next(createError(500, 'Internal Server Error'));
-        }
+        console.log("Error in handleGetFacebookVideo: ", err);
+        handleAddLog(log, false, err);
+        next(createError(500, 'Internal Server Error'));
     }
 }
 
