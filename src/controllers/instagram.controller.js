@@ -6,8 +6,7 @@ require('dotenv').config();
 
 const insta_usr = process.env.INSTA_USR;
 const insta_pwd = process.env.INSTA_PWD;
-let COOKIE = null;
-let COOKIE_EXPIRY = null;
+
 
 const genLog = async (req) => {
     const log = {
@@ -30,7 +29,7 @@ const handleAddLog = async (log, success, response) => {
 }
 
 const throwError = (err, next) => {
-    console.log('Error in handleGetInstagramVideoOrPost');
+    // console.log('Error in handleGetInstagramVideoOrPost');
     if (err.message.includes('Video unavailable')) {
         next(createError(404, 'Video unavailable', err));
     } else {
@@ -43,25 +42,16 @@ const handleCookie = async () => {
         throw createError(500, 'Internal Server Error');
 
     const newCookie = await getCookie(insta_usr, insta_pwd);
-    COOKIE = newCookie;
-    COOKIE_EXPIRY = Date.now() + 10 * 60 * 1000; // 10 minutes
-    return COOKIE;
+    console.log(newCookie)
+    return newCookie;
 }
-
-const fetchCookie = async () => {
-    if (!COOKIE || !COOKIE_EXPIRY || Date.now() > COOKIE_EXPIRY) {
-        return handleCookie();
-    }
-    return COOKIE;
-}
-
 
 const handleGetInstagramVideoOrPost = async (req, res, next) => {
     const { url } = req.body;
     const log = await genLog(req);
     try {
 
-        const cookie = await fetchCookie();
+        const cookie = await handleCookie();
         const ig = new igApi(cookie);
         const respose = await ig.fetchPost(url).then(res => { return res; }).catch(err => { err.message = "Video unavailable"; throw err; });
         const result = handleInstaVideoFormats(respose);
@@ -71,6 +61,7 @@ const handleGetInstagramVideoOrPost = async (req, res, next) => {
         res.status(200).json(result);
 
     } catch (err) {
+        console.log(err);
         handleAddLog(log, false, err.message || 'failed');
         throwError(err, next);
     }
