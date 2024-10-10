@@ -5,8 +5,8 @@ TINY TOOLS API is a collection of small, useful tools designed to simplify every
 
 ## Features
 - **YouTube Video Downloader**: Download videos from YouTube with ease.
-- **Instagram Video Downloader**: Save videos from Instagram directly to your device.
-- **Twitter Video Downloader**: Download videos from Twitter effortlessly.
+- **Instagram Video Downloader**: Save videos from Instagram directly to your device. [NOT STABLE YET]
+- **Twitter Video Downloader**: Download videos from Twitter effortlessly. [NOT BUILT YET]
 - **Facebook Video Downloader**: Easily download videos from Facebook.
 - **YouTube Transcript Generator/Downloader**: Generate and download transcripts for YouTube videos.
 
@@ -37,6 +37,7 @@ Access the API at `http://localhost:5000/api/health`.
 
 ## Endpoints
 - `POST /api/v1/video/yt`: Download videos from YouTube.
+- `POST /api/v1/video/yt/ts`: Download transcripts from YouTube.
 - `POST /api/v1/video/insta`: Save videos from Instagram.
 - `POST /api/v1/video/x`: Download videos from Twitter.
 - `POST /api/v1/video/fb`: Download videos from Facebook.
