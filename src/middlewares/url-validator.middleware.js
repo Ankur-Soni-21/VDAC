@@ -14,8 +14,20 @@ const validateYouTubeUrl = async (req, res, next) => {
 
         // Validate URL format
         const parsedUrl = new URL(sanitizedURL);
-        if (!parsedUrl.hostname.includes('youtube.com') && !parsedUrl.hostname.includes('youtu.be')) {
-            return next(createError(400, 'Invalid YouTube URL'));
+
+        // List of accepted hostnames
+        const acceptedHostnames = [
+            'youtube.com',
+            'youtu.be',
+            'facebook.com',
+            'fb.watch',
+            'instagram.com'
+        ];
+
+        // Check if the hostname is in the list of accepted hostnames
+        const isValidHostname = acceptedHostnames.some(hostname => parsedUrl.hostname.includes(hostname));
+        if (!isValidHostname) {
+            return next(createError(400, 'Invalid URL'));
         }
 
         // Add sanitized URL to the request object

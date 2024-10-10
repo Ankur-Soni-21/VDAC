@@ -1,8 +1,7 @@
-const youtubedl = require('youtube-dl-exec');
 const createError = require('http-errors');
-const { processVidInfo } = require('../utils/youtube/proc-youtube-info.util');
 const logQueue = require('../utils/log-queue.util');
-// const { cacheVideoInfo } = require("../utils/redisCacheSystem.util");
+const { YoutubeTranscript } = require("youtube-transcript")
+
 
 const handleAddLog = async (log, success, response) => {
     log.success = success;
@@ -12,7 +11,7 @@ const handleAddLog = async (log, success, response) => {
 }
 
 
-const handleGetYoutubeVideo = async (req, res, next) => {
+const handleGetYoutubeTranscript = async (req, res, next) => {
     const { url } = req.body;
     const log = {
         ipAddress: req.ip,
@@ -26,24 +25,25 @@ const handleGetYoutubeVideo = async (req, res, next) => {
 
     try {
         console.log("Request received");
-        const videoInfo = await youtubedl(url, {
-            dumpSingleJson: true,
-            noCheckCertificates: true,
-            noWarnings: true,
-            preferFreeFormats: true,
-            addHeader: ['referer:youtube.com', 'user-agent:googlebot'],
-            skipDownload: true,
-        });
 
+        const transcript = await YoutubeTranscript.fetchTranscript(url)
+            .then(transcript => {
+                return transcript;
+            });
+
+        const paraTranscript = transcript.map(item => item.text).join(' ');
+        // console.log(paraTranscript);
+        const result = {
+            transcript_text: paraTranscript,
+            transcript_json: transcript
+        }
 
         console.log("Request processed");
-        const processedInfo = processVidInfo(videoInfo);
-        // cacheVideoInfo(req.redis, req.videoKey, url, processedInfo);
-        handleAddLog(log, true, processedInfo);
-        res.status(200).json(processedInfo);
+        handleAddLog(log, true, transcript);
+        res.status(200).json(result);
 
     } catch (err) {
-        handleAddLog(log, false, err.message);
+        // handleAddLog(log, false, err.message);
         console.log('Error in handleGetVideoInfo', err);
         if (err.message.includes('Video unavailable')) {
             next(createError(404, 'Video unavailable'));
@@ -51,6 +51,6 @@ const handleGetYoutubeVideo = async (req, res, next) => {
             next(createError(500, 'Internal Server Error'));
         }
     }
-};
+}
 
-module.exports = handleGetYoutubeVideo;
+module.exports = handleGetYoutubeTranscript;
