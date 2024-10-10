@@ -26,8 +26,9 @@ class LogQueueSystem {
             console.log(`Processed ${batch.length} logs`);
         } catch (error) {
             console.error('Error processing logs:', error);
-            // Re-add failed logs to the front of the queue
-            this.queue.unshift(...batch);
+            //empty the queue and add only one of the the failed batch logs to the front
+            this.queue = [];
+            this.queue.push(batch[0]);
         } finally {
             this.isProcessing = false;
         }

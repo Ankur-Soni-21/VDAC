@@ -71,7 +71,7 @@ function facebookdl(videoUrl) {
             }
 
         }).catch((err) => {
-            console.log(err)
+            // console.log(err)
             reject("Unable to fetch video information at this time. Please try again")
         })
     })
@@ -83,7 +83,7 @@ function formatDuration(duration) {
         if (!duration)
             throw createError(404, 'Duration not found');
         duration = Number(duration[0].split(":")[1]) / 1000;
-        console.log(duration);
+        // console.log(duration);
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
         const seconds = Math.floor(duration % 60);
