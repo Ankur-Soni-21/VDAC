@@ -44,9 +44,9 @@ const handleGetYoutubeTranscript = async (req, res, next) => {
 
     } catch (err) {
         // handleAddLog(log, false, err.message);
-        console.log('Error in handleGetVideoInfo', err);
-        if (err.message.includes('Video unavailable')) {
-            next(createError(404, 'Video unavailable'));
+        // console.log('Error in handleGetVideoInfo', err.message);
+        if (err.message) {
+            next(createError(404, err.message));
         } else {
             next(createError(500, 'Internal Server Error'));
         }

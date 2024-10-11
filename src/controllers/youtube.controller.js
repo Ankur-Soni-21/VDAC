@@ -2,7 +2,6 @@ const youtubedl = require('youtube-dl-exec');
 const createError = require('http-errors');
 const { processVidInfo } = require('../utils/youtube/proc-youtube-info.util');
 const logQueue = require('../utils/log-queue.util');
-// const { cacheVideoInfo } = require("../utils/redisCacheSystem.util");
 
 const handleAddLog = async (log, success, response) => {
     log.success = success;
@@ -25,7 +24,6 @@ const handleGetYoutubeVideo = async (req, res, next) => {
     };
 
     try {
-        console.log("Request received");
         const videoInfo = await youtubedl(url, {
             dumpSingleJson: true,
             noCheckCertificates: true,
@@ -36,17 +34,16 @@ const handleGetYoutubeVideo = async (req, res, next) => {
         });
 
 
-        console.log("Request processed");
+
         const processedInfo = processVidInfo(videoInfo);
-        // cacheVideoInfo(req.redis, req.videoKey, url, processedInfo);
         handleAddLog(log, true, processedInfo);
         res.status(200).json(processedInfo);
 
     } catch (err) {
-        handleAddLog(log, false, err.message || err || 'Unknown Error');
-        console.log('Error in handleGetYoutubeVideo', err);
-        if (err.message.includes('Video unavailable')) {
-            next(createError(404, 'Video unavailable'));
+        console.log(err);
+        handleAddLog(log, false, err);
+        if (err.stderr) {
+            next(createError(404, err.stderr));
         } else {
             next(createError(500, 'Internal Server Error'));
         }

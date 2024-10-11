@@ -22,6 +22,10 @@ function facebookdl(videoUrl) {
 
         const parseString = (string) => JSON.parse(`{"text": "${string}"}`).text;
 
+
+        const videoIdMatch = videoUrl.match(/videos\/(\d+)/);
+        const videoId = videoIdMatch ? videoIdMatch[1] : "unknown";
+
         if (!videoUrl || !videoUrl.trim()) return reject("Please specify the Facebook URL");
         if (["facebook.com", "fb.watch"].every((domain) => !videoUrl.includes(domain))) return reject("Please enter the valid Facebook URL");
 
@@ -67,12 +71,12 @@ function facebookdl(videoUrl) {
                 }
                 resolve(res)
             } else {
-                reject("Video unavailable")
+                reject(`ERROR: [Facebook] ${videoId}: Unable to fetch video information for URL: ${videoUrl}`)
             }
 
         }).catch((err) => {
             // console.log(err)
-            reject("Unable to fetch video information at this time. Please try again")
+            reject(`ERROR: [Facebook] ${videoId}: Unable to fetch video information for URL: ${videoUrl} `)
         })
     })
 

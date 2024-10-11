@@ -5,7 +5,7 @@ VDAC is a collection of small, useful tools designed to simplify everyday tasks.
 
 ## Features
 - **YouTube Video Downloader**: Download videos from YouTube with ease.
-- **Instagram Video Downloader**: Save videos from Instagram directly to your device. [NOT STABLE YET]
+- **Instagram Video Downloader**: Save videos from Instagram directly to your device. [NOT BUILT YET]
 - **Twitter Video Downloader**: Download videos from Twitter effortlessly. [NOT BUILT YET]
 - **Facebook Video Downloader**: Easily download videos from Facebook.
 - **YouTube Transcript Generator/Downloader**: Generate and download transcripts for YouTube videos.
@@ -26,11 +26,17 @@ cp env.sample .env
 ```
 Make sure to fill in the necessary environment variables in the `.env` file.
 
-## Docker Setup and usage
+## Docker Setup and Usage
 To use Docker, build the Docker image and start the containers using Docker Compose:
 ```bash
 docker build -t vdac .
 docker-compose up
+```
+
+## Running Without Docker
+To run the application without Docker, use the following commands:
+```bash
+npm start
 ```
 Access the API at `http://localhost:5000/api/health`.
 
