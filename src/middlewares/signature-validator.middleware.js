@@ -1,6 +1,6 @@
 const createError = require('http-errors');
-const crypto = require('crypto');
 const dotenv = require('dotenv');
+const CryptoJS = require('crypto-js');
 
 dotenv.config();
 const secret = process.env.SECRET_KEY;
@@ -17,13 +17,10 @@ const generateSignature = (url, ts) => {
         if (!url || !ts) {
             throw createError(404, 'Invalid Parameters');
         }
-        // Concatenate URL, timestamp, and secret key to create data string
-        const data = url + ts + secret;
-        // Generate MD5 hash of the data string
-        const hash = crypto.createHash('md5')
-            .update(data)
-            .digest('hex');
-        return hash;
+        // Concatenate URL, timestamp to create data string
+        const data = `${url}${ts}${secret}`;
+        // Generate AES of the data string
+        return CryptoJS.SHA256(data).toString();
     } catch (err) {
         throw err;
     }
@@ -40,9 +37,11 @@ const verifySignature = (req, res, next) => {
             throw createError(404, 'Invalid Parameters');
         }
 
+
         const { url, ts, _s } = req.body;
         // Generate the expected signature using the provided URL and timestamp
         const expectedSignature = generateSignature(url, ts);
+        console.log('Signature: ', expectedSignature);
         // Compare the provided signature with the expected signature
         if (_s !== expectedSignature) {
             next(createError(404, 'Invalid Signature : ' + _s + ' Expected Signature: ' + expectedSignature));
